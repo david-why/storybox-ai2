@@ -1,0 +1,5 @@
+token.txt
+.env
+.ai_session
+.vscode/
+__pycache__/
