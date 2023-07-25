@@ -5,4 +5,6 @@ Image credits:
 * [Magic box icons created by smashingstocks - Flaticon](https://www.flaticon.com/free-icons/magic-box)
 
 ## Compilation
-You need the `py2ai` library to do this. (Details to be added!)
+Install [the `py2ai` library](https://github.com/david-why/py2ai) and run `make` in the project root directory.
+
+Alternatively, just use [StoryBox.aia](./StoryBox.aia)!
