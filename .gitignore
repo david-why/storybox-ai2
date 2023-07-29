@@ -1,4 +1,5 @@
 token.txt
+*.aia
 .env
 .ai_session
 .vscode/
