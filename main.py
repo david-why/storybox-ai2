@@ -17,11 +17,18 @@ Screen1 = Form(
     AlignHorizontal=3,
     Theme='AppTheme.Light.DarkActionBar',
     AboutScreen='Create stories for small children with the power of ChatGPT!\n\n'
+    'Click "New story" to write a new story. You can specify the style, theme, and '
+    'main character of the story. If you don\'t want to type, click the "circle" '
+    'button to randomize. Then, click "Write story" to get going!\n\n'
+    'Once you have created a story or two, you can browse the stories you wrote by '
+    'clicking on the "Hi-story" button from the home page.\n\n'
     'Image credits:\n'
     'Magic box icons created by smashingstocks - Flaticon '
-    '(https://www.flaticon.com/free-icons/magic-box)',
-    VersionCode=110,
-    VersionName='1.1.0',
+    '(https://www.flaticon.com/free-icons/magic-box)\n\n'
+    'App author: David Wang (david-why)\n'
+    'Created with py2ai',
+    VersionCode=111,
+    VersionName='1.1.1',
 )
 WriterBot = ChatBot(
     Token=CHATBOT_TOKEN,  # type: ignore
@@ -205,6 +212,7 @@ CHARACTERS = [
     'Cat in the Hat',
     'The Little Prince',
     'Thomas the Tank Engine',
+    'Geronimo Stilton',
     'Harry Potter',
 ]
 STRINGS = {
