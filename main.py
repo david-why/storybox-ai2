@@ -2,11 +2,13 @@
 
 import json
 import random
+import time
 
 from py2ai.components import *  # type: ignore
-from py2ai.magic import *  # type: ignore
 from py2ai.enums import *  # type: ignore
+from py2ai.magic import *  # type: ignore
 
+# region components
 # Initialize non-visible components
 Screen1 = Form(
     ScreenOrientation='portrait',
@@ -15,11 +17,11 @@ Screen1 = Form(
     AlignHorizontal=3,
     Theme='AppTheme.Light.DarkActionBar',
     AboutScreen='Create stories for small children with the power of ChatGPT!\n\n'
-    'Image attributions:\n'
+    'Image credits:\n'
     'Magic box icons created by smashingstocks - Flaticon '
     '(https://www.flaticon.com/free-icons/magic-box)',
-    VersionCode=2,
-    VersionName='1.0.2',
+    VersionCode=110,
+    VersionName='1.1.0',
 )
 WriterBot = ChatBot(
     Token=CHATBOT_TOKEN,  # type: ignore
@@ -34,13 +36,12 @@ TextToSpeech1 = TextToSpeech(Language='en', Country='USA')
 Sharing1 = Sharing()
 StoryClock = Clock(TimerInterval=1, TimerEnabled=False)
 
+# region scope1
 # First "screen": The home page with beeg image
 Scope1 = VerticalArrangement(Width=-1095, Height=-2, AlignHorizontal=3)
-Spacing1 = VerticalArrangement(parent=Scope1, Height=50)
-MagicImage = Image(
-    parent=Scope1, Width=-2, ScalePictureToFit=True, Picture='magic-box.png'
-)
-Spacing12 = VerticalArrangement(parent=Scope1, Height=50)
+Spacing1 = VerticalArrangement(parent=Scope1, Height=-1005)
+MagicImage = Image(parent=Scope1, Height=-1050, Picture='magic-box.png')
+Spacing12 = VerticalArrangement(parent=Scope1, Height=-1005)
 StartButton = Button(
     parent=Scope1,
     FontSize=24,
@@ -48,7 +49,7 @@ StartButton = Button(
     BackgroundColor='&HFF66CC66',
     Width=-1080,
 )
-Spacing13 = VerticalArrangement(parent=Scope1, Height=20)
+Spacing13 = VerticalArrangement(parent=Scope1, Height=-1002)
 HistoryButton = Button(
     parent=Scope1,
     FontSize=24,
@@ -56,7 +57,9 @@ HistoryButton = Button(
     BackgroundColor='&HFFFFC800',
     Width=-1080,
 )
+# endregion scope1
 
+# region scope2
 # Second "screen": Choose parameters for story
 # Each input has a label and a random button above it, a horizontal scope, an input box
 Scope2 = VerticalArrangement(Width=-1095, Height=-2, Visible=False, AlignHorizontal=3)
@@ -66,7 +69,12 @@ BackButton2 = Button(parent=Buttons2, Text='🏠', Width=-1015)
 Spacing2 = VerticalArrangement(parent=Scope2, Height=50)
 StyleScope = HorizontalArrangement(parent=Scope2, Width=-2, Height=75, AlignVertical=2)
 StoryL1 = Label(
-    parent=StyleScope, Text='This is a ...', Width=-2, TextAlignment=1, FontSize=24
+    parent=StyleScope,
+    Text='This is a ...',
+    Width=-2,
+    TextAlignment=1,
+    FontSize=24,
+    FontBold=True,
 )
 StyleButton = Button(parent=StyleScope, Text='🔄', FontSize=24)
 StyleInput = TextBox(
@@ -79,6 +87,7 @@ StoryL2 = Label(
     Width=-2,
     TextAlignment=1,
     FontSize=24,
+    FontBold=True,
 )
 ThemeButton = Button(parent=ThemeScope, Text='🔄', FontSize=24)
 ThemeInput = TextBox(
@@ -87,10 +96,11 @@ ThemeInput = TextBox(
 CharScope = HorizontalArrangement(parent=Scope2, Width=-2, Height=75, AlignVertical=2)
 StoryL3 = Label(
     parent=CharScope,
-    Text='... with main character ...',
+    Text='... with character ...',
     Width=-2,
     TextAlignment=1,
     FontSize=24,
+    FontBold=True,
 )
 CharButton = Button(parent=CharScope, Text='🔄', FontSize=24)
 CharInput = TextBox(
@@ -108,8 +118,9 @@ CreateButton2 = Button(
     BackgroundColor='&HFF66CC66',
     Width=-1080,
 )
+# endregion scope2
 
-
+# region scope3
 # Third "screen": The actual story
 Scope3 = VerticalArrangement(Width=-1095, Height=-2, Visible=False)
 Buttons3 = HorizontalArrangement(parent=Scope3, Width=-2)
@@ -121,9 +132,11 @@ BackButton3 = Button(parent=Buttons3, Text='🏠', Width=-1015)
 Spacing3 = VerticalArrangement(parent=Scope3, Height=25)
 StoryScroll = VerticalScrollArrangement(parent=Scope3, Height=-2)
 StoryLabel = Label(parent=StoryScroll, Width=-2, FontSize=24)
+# endregion scope3
 
+# region scope4
 # Fourth "screen": History
-Scope4 = VerticalArrangement(Width=-1095, Height=-2, Visible=False)
+Scope4 = VerticalArrangement(Width=-1095, Height=-2, Visible=False, AlignHorizontal=3)
 Buttons4 = HorizontalArrangement(parent=Scope4, Width=-2)
 # Yes, I know. No, they are not reversed. They are exactly like they should be.
 HistNextButton = Button(parent=Buttons4, Text='⬅', Width=-1015)
@@ -132,37 +145,34 @@ HistViewButton = Button(parent=Buttons4, Text='📖 Read', Width=-2)
 HistDelButton = Button(parent=Buttons4, Text='🗑', Width=-1015)
 BackButton4 = Button(parent=Buttons4, Text='🏠', Width=-1015)
 HistPaginator = Label(
-    parent=Scope4,
-    Text='Loading...',
-    Width=-2,
-    TextAlignment=1,
-    FontSize=24,
-    FontItalic=True,
+    parent=Scope4, Text='Loading...', FontSize=24, Width=-2, TextAlignment=1
 )
 Spacing4 = VerticalArrangement(parent=Scope4, Height=25)
-HistoryL1 = Label(
-    parent=Scope4, Text='This is a ...', Width=-2, TextAlignment=1, FontSize=24
-)
+HistoryL1 = Label(parent=Scope4, Text='This is a ...', FontSize=24, FontBold=True)
 StyleHist = TextBox(
     parent=Scope4, Width=-2, TextAlignment=1, FontSize=24, Enabled=False
 )
-HistoryL2 = Label(
-    parent=Scope4, Text='... story about ...', Width=-2, TextAlignment=1, FontSize=24
-)
+HistoryL2 = Label(parent=Scope4, Text='... story about ...', FontSize=24, FontBold=True)
 ThemeHist = TextBox(
     parent=Scope4, Width=-2, TextAlignment=1, FontSize=24, Enabled=False
 )
 HistoryL3 = Label(
-    parent=Scope4,
-    Text='... with main character ...',
-    Width=-2,
-    TextAlignment=1,
-    FontSize=24,
+    parent=Scope4, Text='... with character ...', FontSize=24, FontBold=True
 )
 CharHist = TextBox(parent=Scope4, Width=-2, TextAlignment=1, FontSize=24, Enabled=False)
 Spacing42 = VerticalArrangement(parent=Scope4, Height=25)
 HistoryLabel = Label(parent=Scope4, Width=-2, TextAlignment=1, FontSize=24)
+Spacing43 = VerticalArrangement(parent=Scope4, Height=50)
+HistViewButton2 = Button(
+    parent=Scope4,
+    FontSize=24,
+    Text='📖 Read story',
+    BackgroundColor='&HFFFFC800',
+    Width=-1080,
+)
+# endregion scope4
 
+# endregion components
 
 # region constants
 STYLES = [
@@ -203,7 +213,8 @@ STRINGS = {
     CharButton: [CharInput, CHARACTERS],
 }
 API_KEY = obfs_text(get_compile_env('CHATBOT_APIKEY'))
-INDEX_DEFAULT = '{"chapters":[],"version":2}'
+INDEX_VERSION = 4
+INDEX_DEFAULT = '{"stories":[],"version":4}'
 # endregion constants
 
 cur_uuid = None
@@ -227,6 +238,17 @@ def init():
     Scope3.Visible = False
     Scope4.Visible = False
     settitle('Story Box')
+    index_data = json.loads(TinyDB1.GetValue('index', INDEX_DEFAULT))
+    if index_data['version'] != INDEX_VERSION:
+        TinyDB1.ClearAll()
+        index_data = json.loads(INDEX_DEFAULT)
+    if index_data['stories']:
+        last_uuid = index_data['stories'][-1]
+        story = json.loads(TinyDB1.GetValue(str(last_uuid), 'null'))
+        StyleInput.Text = story['style']
+        ThemeInput.Text = story['theme']
+        CharInput.Text = story['character']
+    HistoryButton.Visible = bool(index_data['stories'])
 
 
 def getuuid():
@@ -277,21 +299,21 @@ def showstory():
 
 
 def onresponse(response):
-    global cur_uuid, chapter, story_mod, story_sel
+    global cur_uuid, chapter, story_sel
     if cur_uuid == None:
         cur_uuid = getuuid()
         index_str = TinyDB1.GetValue('index', INDEX_DEFAULT)
         index_data = json.loads(index_str)
-        index_data['chapters'].append(cur_uuid)
+        index_data['stories'].append(cur_uuid)
         TinyDB1.StoreValue('index', json.dumps(index_data))
         story_sel = {
             'style': StyleInput.Text,
             'theme': ThemeInput.Text,
             'character': CharInput.Text,
+            'created_at': time.time(),
             'chapters': [response],
         }
     else:
-        story_mod = {'mode': 'add_chapter', 'uuid': cur_uuid, 'data': response}
         story_sel['chapters'].append(response)
     TinyDB1.StoreValue(str(cur_uuid), story_sel)
     showstory()
@@ -353,15 +375,16 @@ def oncreate():
         'style': StyleInput.Text,
         'theme': ThemeInput.Text,
         'character': CharInput.Text,
+        'created_at': time.time(),
         'chapters': ['Loading, please wait...'],
     }
+    chapter = 1
     showstory()
     ChPrevButton.Enabled = False
     PlayButton.Enabled = False
     ChNextButton.Enabled = False
     BackButton3.Enabled = False
     ShareButton.Enabled = False
-    chapter = 1
     cur_uuid = None
     checktext(prompt)
 
@@ -427,19 +450,25 @@ def onhiststoryload(text):
     CharHist.Text = character
     HistPaginator.Text = (
         'Story '
-        + str(len(story_index['chapters']) - index_index)
+        + str(len(story_index['stories']) - index_index)
         + ' of '
-        + str(len(story_index['chapters']))
+        + str(len(story_index['stories']))
     )
-    HistoryLabel.Text = 'There are ' + str(len(chapters)) + ' chapters.'
+    HistoryLabel.Text = (
+        'Written at '
+        + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(story_sel['created_at']))
+        + '\n\nThere are '
+        + str(len(chapters))
+        + ' chapters.'
+    )
     HistPrevButton.Enabled = index_index != 0
     HistViewButton.Enabled = True
     HistDelButton.Enabled = True
-    HistNextButton.Enabled = index_index != len(story_index['chapters']) - 1
+    HistNextButton.Enabled = index_index != len(story_index['stories']) - 1
 
 
 def showhistory():
-    story_uuid = story_index['chapters'][index_index]
+    story_uuid = story_index['stories'][index_index]
     HistPrevButton.Enabled = False
     HistViewButton.Enabled = False
     HistDelButton.Enabled = False
@@ -451,7 +480,7 @@ def showhistory():
 def onhistoryload(text):
     global story_index, index_index
     story_index = json.loads(text)
-    index_index = len(story_index['chapters']) - 1
+    index_index = len(story_index['stories']) - 1
     if index_index < 0:
         HistPaginator.Text = 'No history stories.'
     else:
@@ -488,7 +517,7 @@ def onhistnext():
 
 def onhistview():
     global cur_uuid, chapter
-    cur_uuid = story_index['chapters'][index_index]
+    cur_uuid = story_index['stories'][index_index]
     chapter = 1
     showstory()
     StoryLabel.Text = ''
@@ -508,7 +537,7 @@ def onhistdel():
 def onhistdelchs(choice):
     global story_index
     if choice == 'Yes!':
-        story_index['chapters'].pop(index_index)
+        story_index['stories'].pop(index_index)
         HistPrevButton.Enabled = False
         HistViewButton.Enabled = False
         HistDelButton.Enabled = False
@@ -528,9 +557,13 @@ def onplayend(success):
 
 
 def onback():
+    global index_index
     if Scope3.Visible:
         if from_history:
+            index = index_index
             onhistory()
+            index_index = index
+            showhistory()
         else:
             onstart()
     elif Scope2.Visible or Scope4.Visible:
@@ -544,10 +577,12 @@ def errhandler(comp, function, errno, message):
         Notifier1.ShowAlert(
             'Web request failed. Make sure you are connected to the Internet!'
         )
+        onstart()
     else:
         Notifier1.ShowAlert(
             'Error ' + str(errno) + ' (at ' + str(function) + '): ' + message
         )
+        init()
 
 
 Screen1.on_Initialize(init)
@@ -566,6 +601,7 @@ HistPrevButton.on_Click(onhistprev)
 HistNextButton.on_Click(onhistnext)
 HistViewButton.on_Click(onhistview)
 HistDelButton.on_Click(onhistdel)
+HistViewButton2.on_Click(onhistview)
 DeleteNotifier.on_AfterChoosing(onhistdelchs)
 
 StoryClock.on_Timer(showstory)

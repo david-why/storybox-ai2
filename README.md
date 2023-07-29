@@ -7,4 +7,4 @@ Image credits:
 ## Compilation
 Install [the `py2ai` library](https://github.com/david-why/py2ai) and run `make` in the project root directory.
 
-Alternatively, just use [StoryBox.aia](./StoryBox.aia)!
+Alternatively, just use the pre-compiled project [StoryBox.aia](./StoryBox.aia)!
